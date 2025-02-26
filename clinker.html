@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>clinker</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="clinker_scripts/clinker_style.css">
+  <style>
+    div#plot {
+      width: calc(100vw - 200px);
+      height: 100vh;
+      position: absolute;
+      left: 200px;
+      overflow: visible;
+    }
+    svg.clusterMap {
+      overflow: visible;
+      position: absolute;
+      left: 0;
+    }
+    main {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+  </style>
+
+<script src="clinker_scripts/d3-data.js"></script>
+<!-- // https://d3js.org v6.3.1 Copyright 2020 Mike Bostock -->
+<script  src="clinker_scripts/d3-data_2.js"></script>
+</head>
+
+<body>
+  <main>
+    <div id='plot'></div>
+    <div id="div-floater">
+      <button class="collapsible active" type="button" onclick="toggleActive()">clinker</button>
+      <div id="div-summary">
+        <p id="p-result-summary"></p>
+
+        <p>Plot arrangement</p>
+
+        <div class="setting">
+          <label for="input-scale-factor">Scale factor:</label>
+          <input type="number" id="input-scale-factor" min="1" max="100" value="15" default="15" >
+        </div>
+        <div class="setting">
+          <label for="input-cluster-spacing">Vertical spacing:</label>
+          <input type="number" id="input-cluster-spacing" min="0" max="100" value="40" default="40">
+        </div>
+        <div class="setting">
+          <label for="input-scale-genes">Show genes to scale:</label>
+          <input id="input-scale-genes" type="checkbox" checked>
+        </div>
+        <p>Cluster settings</p>
+        <div class="setting">
+          <label for="input-cluster-align-labels">Align labels:</label>
+          <input id="input-cluster-align-labels" type="checkbox" checked>
+        </div>
+        <div class="setting">
+          <label for="input-cluster-hide-coords">Hide locus coordinates:</label>
+          <input id="input-cluster-hide-coords" type="checkbox">
+        </div>
+        <div class="setting">
+          <label for="input-locus-spacing">Inter-locus spacing:</label>
+          <input type="number" id="input-locus-spacing" min="0" max="100" value="50" default="50">
+        </div>
+        <div class="setting">
+          <label for="input-cluster-name-size">Cluster name font size:</label>
+          <input type="number" id="input-cluster-name-size" min="1" max="20" value="12" default="12">
+        </div>
+        <div class="setting">
+          <label for="input-locus-name-size">Locus name font size:</label>
+          <input type="number" id="input-locus-name-size" min="1" max="20" value="10" default="10">
+        </div>
+        <p>Gene arrows</p>
+        <div class="setting">
+          <label for="input-body-height">Body height:</label>
+          <input type="number" id="input-body-height" min="1" max="25" value="12" default="12">
+        </div>
+        <div class="setting">
+          <label for="input-tip-height">Tip height:</label>
+          <input type="number" id="input-tip-height" min="0" max="20" value="5" default="5">
+        </div>
+        <div class="setting">
+          <label for="input-tip-length">Tip length:</label>
+          <input type="number" id="input-tip-length" min="0" max="20" value="12" default="12">
+        </div>
+        <div class="setting">
+          <label for="input-gene-stroke-colour">Stroke colour:</label>
+          <input type="color" id="input-gene-stroke-colour" default="#000000">
+        </div>
+        <div class="setting">
+          <label for="input-gene-stroke-width">Stroke width:</label>
+          <input type="number" id="input-gene-stroke-width" min="0" step=0.1 value="0.5" default="0.5">
+        </div>
+        <p>Gene labels</p>
+        <div class="setting">
+          <label for="input-gene-labels">Show gene labels</button>
+          <input type="checkbox" id="input-gene-labels">
+        </div>
+        <div class="setting">
+          <label for="input-label-rotation">Label rotation (degrees):</label>
+          <input type="number" id="input-label-rotation" min="0" max="360" value="30" default="30">
+        </div>
+        <div class="setting">
+          <label for="input-label-start">Label start point:</label>
+          <input type="number" id="input-label-start" step="0.1" min="0.0" max="1.0" value="0.5" default="0.5">
+        </div>
+        <div class="setting">
+          <label for="select-label-anchor">Label anchor:</label>
+          <select id="select-label-anchor" name="select-label-anchor">
+            <option value="start">Start</option>
+            <option value="middle">Middle</option>
+            <option value="end">End</option>
+          </select>
+        </div>
+        <div class="setting">
+          <label for="input-label-size">Label font size:</label>
+          <input type="number" id="input-label-size" min="1" max="20" value="10" default="10">
+        </div>
+        <!-- Removing the label type dropdown menu -->
+        <div class="setting">
+          <label for="input-label-spacing">Spacing from gene:</label>
+          <input type="number" id="input-label-spacing" min="0" value="2" default="2">
+        </div>
+        <div class="setting">
+          <label for="select-label-position">Label position:</label>
+          <select id="select-label-position" name="select-label-position" default="top" value="top">
+            <option value="top">Top</option>
+            <option value="middle">Middle</option>
+            <option value="bottom">Bottom</option>
+          </select>
+        </div>
+        <p>Scale bar</p>
+        <div class="setting">
+          <label for="input-scalebar-fontsize">Font size:</label>
+          <input type="number" id="input-scalebar-fontsize" min="1" max="20" value="10" default="10">
+        </div>
+        <div class="setting">
+          <label for="input-scalebar-height">Height:</label>
+          <input type="number" id="input-scalebar-height" min="1" max="50" value="12" default="12">
+        </div>
+        <div class="setting">
+          <label for="input-scalebar-basepair">Length (base pair):</label>
+          <input type="number" id="input-scalebar-basepair" min="1" value="2500" default="2500">
+        </div>
+        <div class="setting">
+          <label for="input-scalebar-margin-top">Top margin:</label>
+          <input type="number" id="input-scalebar-margin-top" min="1" value="20" default="20">
+        </div>
+        <p>Colour bar</p>
+        <div class="setting">
+          <label for="input-colourbar-fontsize">Font size:</label>
+          <input type="number" id="input-colourbar-fontsize" min="1" max="20" value="10" default="10">
+        </div>
+        <div class="setting">
+          <label for="input-colourbar-height">Height:</label>
+          <input type="number" id="input-colourbar-height" min="1" max="50" value="12" default="12">
+        </div>
+        <div class="setting">
+          <label for="input-colourbar-margin-top">Top margin:</label>
+          <input type="number" id="input-colourbar-margin-top" min="1" value="20" default="20">
+        </div>
+        <p>Legend</p>
+        <div class="setting">
+          <label for="input-legend-fontsize">Font size:</label>
+          <input type="number" id="input-legend-fontsize" min="1" max="20" value="14" default="14">
+        </div>
+        <div class="setting">
+          <label for="input-legend-entryheight">Height:</label>
+          <input type="number" id="input-legend-entryheight" min="1" max="50" value="18" default="18">
+        </div>
+        <div class="setting">
+          <label for="input-legend-margin-left">Left margin:</label>
+          <input type="number" id="input-legend-margin-left" min="1" value="20" default="20">
+        </div>
+        <p>Links</p>
+        <div class="setting">
+          <label for="input-link-show">Show links:</button>
+          <input type="checkbox" id="input-link-show" checked>
+        </div>
+        <div class="setting">
+          <label for="input-link-best-only">Show only best links:</label>
+          <input type="checkbox" id="input-link-best-only">
+        </div>
+        <div class="setting">
+          <label for="input-link-as-line">Draw links as lines:</label>
+          <input type="checkbox" id="input-link-as-line">
+        </div>
+        <div class="setting">
+          <label for="input-link-straight">Draw straight links:</label>
+          <input type="checkbox" id="input-link-straight">
+        </div>
+        <div class="setting">
+          <label for="input-link-group-colour">Use similarity group colour:</label>
+          <input type="checkbox" id="input-link-group-colour">
+        </div>
+        <div class="setting">
+          <label for="input-link-stroke-width">Link stroke width:</label>
+          <input type="number" id="input-link-stroke-width" min="0" step=0.1 value="0.5" default="0.5">
+        </div>
+        <div class="setting">
+          <label for="input-link-threshold">Identity threshold:</label>
+          <input type="number" id="input-link-threshold" min="0" max="1" step=0.01 value="0.3" default="0.3">
+        </div>
+        <div class="setting">
+          <label for="input-link-label-show">Show link labels:</button>
+          <input type="checkbox" id="input-link-label-show">
+        </div>
+        <div class="setting">
+          <label for="input-link-fontsize">Label font size:</label>
+          <input type="number" id="input-link-fontsize" min="1" value="10" default="10">
+        </div>
+        <div class="setting">
+          <label for="input-link-label-pos">Label position:</label>
+          <input type="number" id="input-link-label-pos" min="0" max="1" step="0.01" value="0.5" default="0.5">
+        </div>
+        <div class="setting">
+          <label for="input-link-labelbg-show">Show link label background:</button>
+          <input type="checkbox" id="input-link-labelbg-show" checked>
+        </div>
+	
+      </div>
+      
+      </div>
+      <script>
+      const coll = document.querySelector(".collapsible");
+      const menu = document.querySelector("#div-summary");
+      function toggleActive(event) {
+        coll.classList.toggle("active");
+        menu.style.display = menu.style.display === "none" ? "block" : "none";
+      }
+      </script>
+
+    <script>
+      function plot(data) {
+        const div = d3.select("#plot")
+        const chart = ClusterMap.ClusterMap()
+          .config({
+            scaleFactor: 15,
+            plot: {
+              scaleGenes: true,
+              width: window.innerWidth - 300,  // Adjusted from 400 to 300
+              height: window.innerHeight,
+              margin: {
+                left: 50,
+                top: 50,
+                right: 50,
+                bottom: 50
+              }
+            },
+            cluster: {
+              spacing: 40,
+              alignLabels: true,
+            },
+            gene: {
+              label: {
+                show: false,
+                text: d => d.names.gene || d.names.locus_tag || d.uid
+              }
+            },
+          })
+      
+        let plot = d3.select("#plot")
+          .data([data])
+          .call(chart)
+      
+        d3.select("#btn-save-svg")
+          .on("click", () => {
+            const svg = div.select("svg.clusterMap")
+            const blob = serialise(svg)
+            download(blob, "clinker.svg")
+          })
+
+        function update(opts) {
+          chart.config(opts) 
+          plot.call(chart)
+        }
+      
+        // Remove the label type selection code and directly bind gene label checkbox
+        d3.select("#input-gene-labels")
+          .on("change", function() {
+            const showLabels = d3.select(this).property("checked");
+            update({
+              gene: {
+                label: {
+                  show: showLabels,
+                  text: d => d.names.gene || d.names.locus_tag || d.uid
+                }
+              }
+            });
+          })
+      
+        // Figure layout
+        d3.select("#input-scale-factor")
+          .on("change", function() {update({plot: {scaleFactor: +this.value}})})
+        d3.select("#input-cluster-spacing")
+          .on("change", function() {update({cluster: {spacing: +this.value}})})
+        d3.select("#input-scale-genes")
+          .on("change", function() {update({plot: {scaleGenes: d3.select(this).property("checked")}})})
+      
+        // Cluster
+        d3.select("#input-cluster-align-labels")
+          .on("change", function() {update({cluster: {alignLabels: d3.select(this).property("checked")}})})
+        d3.select("#input-cluster-hide-coords")
+          .on("change", function() {update({cluster: {hideLocusCoordinates: d3.select(this).property("checked")}})})
+        d3.select("#input-cluster-name-size")
+          .on("change", function() {update({cluster: {nameFontSize: +this.value}})})
+        d3.select("#input-locus-name-size")
+          .on("change", function() {update({cluster: {lociFontSize: +this.value}})})
+        d3.select("#input-locus-spacing")
+          .on("change", function() {update({locus: {spacing: +this.value}})})
+      
+        // Gene polygon shape
+        d3.select("#input-body-height")
+          .on("change", function() {update({gene: {shape: {bodyHeight: +this.value}}})})
+        d3.select("#input-tip-height")
+          .on("change", function() {update({gene: {shape: {tipHeight: +this.value}}})})
+        d3.select("#input-tip-length")
+          .on("change", function() {update({gene: {shape: {tipLength: +this.value}}})})
+        d3.select("#input-gene-stroke-colour")
+          .on("change", function() {update({gene: {shape: {stroke: this.value}}})})
+        d3.select("#input-gene-stroke-width")
+          .on("change", function() {update({gene: {shape: {strokeWidth: +this.value}}})})
+      
+        // Remove the duplicate gene labels event handler and keep only this one
+        d3.select("#input-gene-labels")
+          .on("change", function() {
+            const showLabels = d3.select(this).property("checked");
+            d3.selectAll("text.geneLabel")
+              .each(function(d) {
+                d.label = d.names.gene || d.names.locus_tag || d.uid;
+              });
+            update({
+              gene: {
+                label: {
+                  show: showLabels,
+                  text: d => d.names.gene || d.names.locus_tag || d.uid
+                }
+              }
+            });
+          })
+
+        d3.select("#input-label-rotation")
+          .on("change", function() {update({gene: {label: {rotation: +this.value}}})})
+        d3.select("#input-label-start")
+          .on("change", function() {update({gene: {label: {start: +this.value}}})})
+        d3.select("#select-label-anchor")
+          .on("change", function() {update({gene: {label: {anchor: this.value}}})})
+        d3.select("#input-label-size")
+          .on("change", function() {update({gene: {label: {fontSize: +this.value}}})})
+        d3.select("#input-label-spacing")
+          .on("change", function() {update({gene: {label: {spacing: +this.value}}})})
+        d3.select("#select-label-position")
+          .on("change", function() {update({gene: {label: {position: this.value}}})})
+      
+        // Scale bar
+        d3.select("#input-scalebar-fontsize")
+          .on("change", function() {update({scaleBar: {fontSize: +this.value}})})
+        d3.select("#input-scalebar-height")
+          .on("change", function() {update({scaleBar: {height: +this.value}})})
+        d3.select("#input-scalebar-basepair")
+          .on("change", function() {update({scaleBar: {basePair: +this.value}})})
+        d3.select("#input-scalebar-margin-top")
+          .on("change", function() {update({scaleBar: {marginTop: +this.value}})})
+        
+        // Colour bar
+        d3.select("#input-colourbar-fontsize")
+          .on("change", function() {update({colourBar: {fontSize: +this.value}})})
+        d3.select("#input-colourbar-height")
+          .on("change", function() {update({colourBar: {height: +this.value}})})
+        d3.select("#input-colourbar-margin-top")
+          .on("change", function() {update({colourBar: {marginTop: +this.value}})})
+      
+        // Legend
+        d3.select("#input-legend-fontsize")
+          .on("change", function() {update({legend: {fontSize: +this.value}})})
+        d3.select("#input-legend-entryheight")
+          .on("change", function() {update({legend: {entryHeight: +this.value}})})
+        d3.select("#input-legend-margin-left")
+          .on("change", function() {update({legend: {marginLeft: +this.value}})})
+      
+        // Links
+        d3.select("#input-link-show")
+          .on("change", function() {update({link: {show: d3.select(this).property("checked")}})})
+        d3.select("#input-link-best-only")
+          .on("change", function() {update({link: {bestOnly: d3.select(this).property("checked")}})})
+        d3.select("#input-link-as-line")
+          .on("change", function() {update({link: {asLine: d3.select(this).property("checked")}})})
+        d3.select("#input-link-straight")
+          .on("change", function() {update({link: {straight: d3.select(this).property("checked")}})})
+        d3.select("#input-link-group-colour")
+          .on("change", function() {update({link: {groupColour: d3.select(this).property("checked")}})})
+        d3.select("#input-link-stroke-width")
+          .on("change", function() {update({link: {strokeWidth: +this.value}})})
+        d3.select("#input-link-threshold")
+          .on("change", function() {update({link: {threshold: +this.value}})})
+        d3.select("#input-link-fontsize")
+          .on("change", function() {update({link: {label: {fontSize: +this.value}}})})
+        d3.select("#input-link-label-pos")
+          .on("change", function() {update({link: {label: {position: +this.value}}})})
+        d3.select("#input-link-label-show")
+          .on("change", function() {update({link: {label: {show: d3.select(this).property("checked")}}})})
+        d3.select("#input-link-labelbg-show")
+          .on("change", function() {update({link: {label: {background: d3.select(this).property("checked")}}})})
+      }   
+
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('id');
+const dataFilePath = `data/${id}.json`;
+
+if (id) {
+  const dataPromise = d3.json(dataFilePath).then(plot);
+} else {
+  console.error("No 'id' parameter provided in the URL.");
+}
+</script>
+  </main>
+</body>
+
+</html>
