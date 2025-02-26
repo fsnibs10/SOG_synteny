@@ -24,6 +24,10 @@
       height: 100vh;
       overflow: hidden;
     }
+    /* Add this new rule to hide legend circles */
+    .legend circle {
+      display: none;
+    }
   </style>
 
 <script src="clinker_scripts/d3-data.js"></script>
@@ -163,19 +167,6 @@
           <label for="input-colourbar-margin-top">Top margin:</label>
           <input type="number" id="input-colourbar-margin-top" min="1" value="20" default="20">
         </div>
-        <p>Legend</p>
-        <div class="setting">
-          <label for="input-legend-fontsize">Font size:</label>
-          <input type="number" id="input-legend-fontsize" min="1" max="20" value="14" default="14">
-        </div>
-        <div class="setting">
-          <label for="input-legend-entryheight">Height:</label>
-          <input type="number" id="input-legend-entryheight" min="1" max="50" value="18" default="18">
-        </div>
-        <div class="setting">
-          <label for="input-legend-margin-left">Left margin:</label>
-          <input type="number" id="input-legend-margin-left" min="1" value="20" default="20">
-        </div>
         <p>Links</p>
         <div class="setting">
           <label for="input-link-show">Show links:</button>
@@ -266,6 +257,46 @@
         let plot = d3.select("#plot")
           .data([data])
           .call(chart)
+
+        // Add SVG filter definition for the glow effect
+        const svg = div.select("svg.clusterMap");
+        const defs = svg.append("defs");
+        defs.html(`
+          <filter id="highlight-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feColorMatrix type="matrix" values="
+              1 0 0 0 1
+              0 0 0 0 0
+              0 0 0 0 0
+              0 0 0 1 0" result="red"/>
+            <feGaussianBlur in="red" stdDeviation="3" result="blur1"/>
+            <feGaussianBlur in="red" stdDeviation="6" result="blur2"/>
+            <feMerge>
+              <feMergeNode in="blur1"/>
+              <feMergeNode in="blur2"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        `);
+
+        function highlightSixthGene() {
+          d3.selectAll(".cluster")
+            .each(function() {
+              d3.select(this)
+                .selectAll("polygon.genePolygon")
+                .each(function(d, i) {
+                  if (i === 5) {
+                    d3.select(this)
+                      .style("fill", "#ff1a1a")
+                      .style("stroke-width", "1")
+                      .style("stroke", "#000000")
+                      .style("filter", "url(#highlight-glow)");
+                  }
+                });
+            });
+        }
+
+        // Initial highlighting
+        highlightSixthGene();
       
         d3.select("#btn-save-svg")
           .on("click", () => {
@@ -373,14 +404,6 @@
           .on("change", function() {update({colourBar: {height: +this.value}})})
         d3.select("#input-colourbar-margin-top")
           .on("change", function() {update({colourBar: {marginTop: +this.value}})})
-      
-        // Legend
-        d3.select("#input-legend-fontsize")
-          .on("change", function() {update({legend: {fontSize: +this.value}})})
-        d3.select("#input-legend-entryheight")
-          .on("change", function() {update({legend: {entryHeight: +this.value}})})
-        d3.select("#input-legend-margin-left")
-          .on("change", function() {update({legend: {marginLeft: +this.value}})})
       
         // Links
         d3.select("#input-link-show")
