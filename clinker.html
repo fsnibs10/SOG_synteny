@@ -5,17 +5,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.PNG">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.PNG">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.PNG">
-<link rel="manifest" href="/site.webmanifest">	
-<link rel="shortcut icon" type="image/x-icon" href="favicon.ico?">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.PNG">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.PNG">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.PNG">
+  <link rel="manifest" href="/site.webmanifest">	
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?">
   
-
   <link rel="stylesheet" href="clinker_scripts/clinker_style.css">
   <style>
-
-  
     div#plot {
       width: calc(100vw - 200px);
       height: 100vh;
@@ -108,10 +105,7 @@
       margin: 0 0 0 8px;
       vertical-align: middle;
     }
-	
-
   </style>
-  
 
 <script src="clinker_scripts/d3-data.js"></script>
 <!-- // https://d3js.org v6.3.1 Copyright 2020 Mike Bostock -->
@@ -129,107 +123,16 @@
 
         <h4>Instructions:</h4>
         <ul>
-          <li>Drag cluster names to re-order clusters</li>
-          <li>Hover over a locus to reveal box and handles; drag box to move the locus, drag handles to resize it, double click to flip</li>
-          <li>Click genes to anchor the figure around them</li>
-          <li>Right click genes to edit their labels</li>
-          <li>Click cluster names and legend entries to rename them</li>
-          <li>Click legend circles to change gene colours</li>
-          <li>Right click legend entries to remove them and hide links</li>
-          <li>Click scale bar text to change its length</li>
-          <li>Tweak other options below!</li>
+          <li>Drag to move the figure</li>
+          <li>Use mouse wheel or pinch gesture to zoom in/out</li>
+          <li>Drag a sequence name to reorder</li>
+          <li>Double-click on a sequence to flip orientation</li>
+          <li>Hover over a sequence to reveal a box and drag the box (not on a gene) to move the sequence</li>
+          <li>Click on a gene to anchor the figure around it and its orthologs</li>
+          <li>Click on a sequence name to rename</li>
+          <li>Click on scale bar text to change scale bar length</li>
+          <li>Adjust other settings below!</li>
         </ul>
-
-        <p>Plot arrangement</p>
-
-        <div class="setting">
-          <label for="input-scale-factor">Horizontal scale factor:</label>
-          <input type="number" id="input-scale-factor" min="1" max="100" value="20" default="20" >
-        </div>
-        <div class="setting">
-          <label for="input-cluster-spacing">Vertical spacing:</label>
-          <input type="number" id="input-cluster-spacing" min="0" max="100" value="40" default="40">
-        </div>
-        <div class="setting">
-          <label for="input-scale-genes">Show genes to scale:</label>
-          <input id="input-scale-genes" type="checkbox" checked>
-        </div>
-        <p>Cluster settings</p>
-        <div class="setting">
-          <label for="input-cluster-align-labels">Align labels:</label>
-          <input id="input-cluster-align-labels" type="checkbox" checked>
-        </div>
-        <div class="setting">
-          <label for="input-cluster-hide-coords">Hide locus coordinates:</label>
-          <input id="input-cluster-hide-coords" type="checkbox">
-        </div>
-        <div class="setting">
-          <label for="input-cluster-name-size">Cluster name font size:</label>
-          <input type="number" id="input-cluster-name-size" min="1" max="20" value="12" default="12">
-        </div>
-        <div class="setting">
-          <label for="input-locus-name-size">Locus name font size:</label>
-          <input type="number" id="input-locus-name-size" min="1" max="20" value="10" default="10">
-        </div>
-        <p>Gene arrows</p>
-        <div class="setting">
-          <label for="input-body-height">Body height:</label>
-          <input type="number" id="input-body-height" min="1" max="25" value="12" default="12">
-        </div>
-        <div class="setting">
-          <label for="input-tip-height">Tip height:</label>
-          <input type="number" id="input-tip-height" min="0" max="20" value="5" default="5">
-        </div>
-        <div class="setting">
-          <label for="input-tip-length">Tip length:</label>
-          <input type="number" id="input-tip-length" min="0" max="20" value="12" default="12">
-        </div>
-        <div class="setting">
-          <label for="input-gene-stroke-colour">Stroke colour:</label>
-          <input type="color" id="input-gene-stroke-colour" default="#000000">
-        </div>
-        <div class="setting">
-          <label for="input-gene-stroke-width">Stroke width:</label>
-          <input type="number" id="input-gene-stroke-width" min="0" step=0.1 value="0.5" default="0.5">
-        </div>
-        <p>Gene labels</p>
-        <div class="setting">
-          <label for="input-gene-labels">Show gene labels</button>
-          <input type="checkbox" id="input-gene-labels">
-        </div>
-        <div class="setting">
-          <label for="input-label-rotation">Label rotation (degrees):</label>
-          <input type="number" id="input-label-rotation" min="0" max="360" value="30" default="30">
-        </div>
-        <div class="setting">
-          <label for="input-label-start">Label start point:</label>
-          <input type="number" id="input-label-start" step="0.1" min="0.0" max="1.0" value="0.5" default="0.5">
-        </div>
-        <div class="setting">
-          <label for="select-label-anchor">Label anchor:</label>
-          <select id="select-label-anchor" name="select-label-anchor">
-            <option value="start">Start</option>
-            <option value="middle">Middle</option>
-            <option value="end">End</option>
-          </select>
-        </div>
-        <div class="setting">
-          <label for="input-label-size">Label font size:</label>
-          <input type="number" id="input-label-size" min="1" max="20" value="10" default="10">
-        </div>
-        <!-- Removing the label type dropdown menu -->
-        <div class="setting">
-          <label for="input-label-spacing">Spacing from gene:</label>
-          <input type="number" id="input-label-spacing" min="0" value="2" default="2">
-        </div>
-        <div class="setting">
-          <label for="select-label-position">Label position:</label>
-          <select id="select-label-position" name="select-label-position" default="top" value="top">
-            <option value="top">Top</option>
-            <option value="middle">Middle</option>
-            <option value="bottom">Bottom</option>
-          </select>
-        </div>
 
         <p>Links</p>
         <div class="setting">
@@ -261,21 +164,115 @@
           <input type="number" id="input-link-threshold" min="0" max="1" step=0.01 value="0.3" default="0.3">
         </div>
         <div class="setting">
-          <label for="input-link-label-show">Show link labels:</button>
+          <label for="input-link-label-show">Show identity:</button>
           <input type="checkbox" id="input-link-label-show">
         </div>
         <div class="setting">
-          <label for="input-link-fontsize">Label font size:</label>
+          <label for="input-link-fontsize">Identity font size:</label>
           <input type="number" id="input-link-fontsize" min="1" value="10" default="10">
         </div>
         <div class="setting">
-          <label for="input-link-label-pos">Label position:</label>
+          <label for="input-link-label-pos">Identity position:</label>
           <input type="number" id="input-link-label-pos" min="0" max="1" step="0.01" value="0.5" default="0.5">
         </div>
         <div class="setting">
-          <label for="input-link-labelbg-show">Show link label background:</button>
+          <label for="input-link-labelbg-show">Show identity background:</button>
           <input type="checkbox" id="input-link-labelbg-show" checked>
         </div>
+
+        <p>Gene IDs</p>
+        <div class="setting">
+          <label for="input-gene-labels">Show gene IDs</button>
+          <input type="checkbox" id="input-gene-labels">
+        </div>
+        <div class="setting">
+          <label for="input-label-rotation">ID rotation (degrees):</label>
+          <input type="number" id="input-label-rotation" min="0" max="360" value="30" default="30">
+        </div>
+        <div class="setting">
+          <label for="input-label-start">ID start point:</label>
+          <input type="number" id="input-label-start" step="0.1" min="0.0" max="1.0" value="0.5" default="0.5">
+        </div>
+        <div class="setting">
+          <label for="select-label-anchor">ID anchor:</label>
+          <select id="select-label-anchor" name="select-label-anchor">
+            <option value="start">Start</option>
+            <option value="middle">Middle</option>
+            <option value="end">End</option>
+          </select>
+        </div>
+        <div class="setting">
+          <label for="input-label-size">ID font size:</label>
+          <input type="number" id="input-label-size" min="1" max="20" value="10" default="10">
+        </div>
+        <!-- Removing the label type dropdown menu -->
+        <div class="setting">
+          <label for="input-label-spacing">Spacing from gene:</label>
+          <input type="number" id="input-label-spacing" min="0" value="2" default="2">
+        </div>
+        <div class="setting">
+          <label for="select-label-position">ID position:</label>
+          <select id="select-label-position" name="select-label-position" default="top" value="top">
+            <option value="top">Top</option>
+            <option value="middle">Middle</option>
+            <option value="bottom">Bottom</option>
+          </select>
+        </div>
+
+        <p>Gene arrows</p>
+        <div class="setting">
+          <label for="input-body-height">Body height:</label>
+          <input type="number" id="input-body-height" min="1" max="25" value="12" default="12">
+        </div>
+        <div class="setting">
+          <label for="input-tip-height">Tip height:</label>
+          <input type="number" id="input-tip-height" min="0" max="20" value="5" default="5">
+        </div>
+        <div class="setting">
+          <label for="input-tip-length">Tip length:</label>
+          <input type="number" id="input-tip-length" min="0" max="20" value="12" default="12">
+        </div>
+        <div class="setting">
+          <label for="input-gene-stroke-colour">Stroke colour:</label>
+          <input type="color" id="input-gene-stroke-colour" default="#000000">
+        </div>
+        <div class="setting">
+          <label for="input-gene-stroke-width">Stroke width:</label>
+          <input type="number" id="input-gene-stroke-width" min="0" step=0.1 value="0.5" default="0.5">
+        </div>
+
+        <p>Plot arrangement</p>
+        <div class="setting">
+          <label for="input-scale-factor">Horizontal scale factor:</label>
+          <input type="number" id="input-scale-factor" min="1" max="100" value="20" default="20" >
+        </div>
+        <div class="setting">
+          <label for="input-cluster-spacing">Vertical spacing:</label>
+          <input type="number" id="input-cluster-spacing" min="0" max="100" value="40" default="40">
+        </div>
+        <div class="setting">
+          <label for="input-scale-genes">Show genes to scale:</label>
+          <input id="input-scale-genes" type="checkbox" checked>
+        </div>
+
+        <p>Sequence names and coordinates</p>
+        <div class="setting">
+          <label for="input-cluster-align-labels">Align names:</label>
+          <input id="input-cluster-align-labels" type="checkbox" checked>
+        </div>
+        <div class="setting">
+          <label for="input-cluster-hide-coords">Hide coordinates:</label>
+          <input id="input-cluster-hide-coords" type="checkbox">
+        </div>
+        <div class="setting">
+          <label for="input-cluster-name-size">Sequence name font size:</label>
+          <input type="number" id="input-cluster-name-size" min="1" max="20" value="12" default="12">
+        </div>
+        <div class="setting">
+          <label for="input-locus-name-size">Coordinates font size:</label>
+          <input type="number" id="input-locus-name-size" min="1" max="20" value="10" default="10">
+        </div>
+
 
         <p>Scale bar</p>
         <div class="setting">
@@ -294,7 +291,8 @@
           <label for="input-scalebar-margin-top">Top margin:</label>
           <input type="number" id="input-scalebar-margin-top" min="1" value="20" default="20">
         </div>
-        <p>Colour bar</p>
+
+        <p>Identity greyscale level</p>
         <div class="setting">
           <label for="input-colourbar-fontsize">Font size:</label>
           <input type="number" id="input-colourbar-fontsize" min="1" max="20" value="10" default="10">
@@ -386,7 +384,7 @@
                 // Get the gene name for the banner
                 const geneName = d.names.gene || d.names.locus_tag || d.uid;
                 d3.select("#gene-banner")
-                  .html(`Synteny plot for ${geneName} and its orthologs (highlighted in red)`);
+                  .html(`Synteny plot for ${geneName} and its orthologs (in red with glow effect)`);
               }
             });
 
