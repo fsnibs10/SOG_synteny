@@ -12,6 +12,7 @@
       position: absolute;
       left: 200px;
       overflow: visible;
+      margin-top: 30px; /* Add margin to prevent overlap with banner */
     }
     svg.clusterMap {
       overflow: visible;
@@ -28,6 +29,32 @@
     .legend circle {
       display: none;
     }
+    /* Add banner styles */
+    .banner {
+      position: fixed;
+      top: 0;
+      left: 200px;
+      width: calc(100vw - 700px);
+      background: linear-gradient(135deg, #2c3e50, #3498db);
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: white;
+      white-space: pre-line;
+      height: 25px;
+      border-radius: 6px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin: 5px;
+      transition: all 0.3s ease;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .banner:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    }
   </style>
 
 <script src="clinker_scripts/d3-data.js"></script>
@@ -37,17 +64,18 @@
 
 <body>
   <main>
+    <div class="banner" id="gene-banner"></div>
     <div id='plot'></div>
     <div id="div-floater">
-      <button class="collapsible active" type="button" onclick="toggleActive()">clinker</button>
+      <button class="collapsible active" type="button" onclick="toggleActive()">Settings</button>
       <div id="div-summary">
         <p id="p-result-summary"></p>
 
         <p>Plot arrangement</p>
 
         <div class="setting">
-          <label for="input-scale-factor">Scale factor:</label>
-          <input type="number" id="input-scale-factor" min="1" max="100" value="15" default="15" >
+          <label for="input-scale-factor">Horizontal scale factor:</label>
+          <input type="number" id="input-scale-factor" min="1" max="100" value="20" default="20" >
         </div>
         <div class="setting">
           <label for="input-cluster-spacing">Vertical spacing:</label>
@@ -137,36 +165,7 @@
             <option value="bottom">Bottom</option>
           </select>
         </div>
-        <p>Scale bar</p>
-        <div class="setting">
-          <label for="input-scalebar-fontsize">Font size:</label>
-          <input type="number" id="input-scalebar-fontsize" min="1" max="20" value="10" default="10">
-        </div>
-        <div class="setting">
-          <label for="input-scalebar-height">Height:</label>
-          <input type="number" id="input-scalebar-height" min="1" max="50" value="12" default="12">
-        </div>
-        <div class="setting">
-          <label for="input-scalebar-basepair">Length (base pair):</label>
-          <input type="number" id="input-scalebar-basepair" min="1" value="2500" default="2500">
-        </div>
-        <div class="setting">
-          <label for="input-scalebar-margin-top">Top margin:</label>
-          <input type="number" id="input-scalebar-margin-top" min="1" value="20" default="20">
-        </div>
-        <p>Colour bar</p>
-        <div class="setting">
-          <label for="input-colourbar-fontsize">Font size:</label>
-          <input type="number" id="input-colourbar-fontsize" min="1" max="20" value="10" default="10">
-        </div>
-        <div class="setting">
-          <label for="input-colourbar-height">Height:</label>
-          <input type="number" id="input-colourbar-height" min="1" max="50" value="12" default="12">
-        </div>
-        <div class="setting">
-          <label for="input-colourbar-margin-top">Top margin:</label>
-          <input type="number" id="input-colourbar-margin-top" min="1" value="20" default="20">
-        </div>
+
         <p>Links</p>
         <div class="setting">
           <label for="input-link-show">Show links:</button>
@@ -212,6 +211,37 @@
           <label for="input-link-labelbg-show">Show link label background:</button>
           <input type="checkbox" id="input-link-labelbg-show" checked>
         </div>
+
+        <p>Scale bar</p>
+        <div class="setting">
+          <label for="input-scalebar-fontsize">Font size:</label>
+          <input type="number" id="input-scalebar-fontsize" min="1" max="20" value="10" default="10">
+        </div>
+        <div class="setting">
+          <label for="input-scalebar-height">Height:</label>
+          <input type="number" id="input-scalebar-height" min="1" max="50" value="12" default="12">
+        </div>
+        <div class="setting">
+          <label for="input-scalebar-basepair">Length (base pair):</label>
+          <input type="number" id="input-scalebar-basepair" min="1" value="5000" default="5000">
+        </div>
+        <div class="setting">
+          <label for="input-scalebar-margin-top">Top margin:</label>
+          <input type="number" id="input-scalebar-margin-top" min="1" value="20" default="20">
+        </div>
+        <p>Colour bar</p>
+        <div class="setting">
+          <label for="input-colourbar-fontsize">Font size:</label>
+          <input type="number" id="input-colourbar-fontsize" min="1" max="20" value="10" default="10">
+        </div>
+        <div class="setting">
+          <label for="input-colourbar-height">Height:</label>
+          <input type="number" id="input-colourbar-height" min="1" max="50" value="12" default="12">
+        </div>
+        <div class="setting">
+          <label for="input-colourbar-margin-top">Top margin:</label>
+          <input type="number" id="input-colourbar-margin-top" min="1" value="20" default="20">
+        </div>
 	
       </div>
       
@@ -230,11 +260,11 @@
         const div = d3.select("#plot")
         const chart = ClusterMap.ClusterMap()
           .config({
-            scaleFactor: 15,
             plot: {
               scaleGenes: true,
-              width: window.innerWidth - 300,  // Adjusted from 400 to 300
+              width: window.innerWidth - 300,
               height: window.innerHeight,
+              scaleFactor: 20,
               margin: {
                 left: 50,
                 top: 50,
@@ -252,6 +282,9 @@
                 text: d => d.names.gene || d.names.locus_tag || d.uid
               }
             },
+            scaleBar: {
+              basePair: 5000  // Add this configuration
+            }
           })
       
         let plot = d3.select("#plot")
@@ -279,6 +312,20 @@
         `);
 
         function highlightSixthGene() {
+          // Get the first cluster only (top row)
+          const firstCluster = d3.select(".cluster:first-child");
+          
+          firstCluster.selectAll("polygon.genePolygon")
+            .each(function(d, i) {
+              if (i === 5) {
+                // Get the gene name for the banner
+                const geneName = d.names.gene || d.names.locus_tag || d.uid;
+                d3.select("#gene-banner")
+                  .html(`Synteny plot for ${geneName} and its orthologs (highlighted in red)`);
+              }
+            });
+
+          // Keep the original highlighting for all clusters
           d3.selectAll(".cluster")
             .each(function() {
               d3.select(this)
