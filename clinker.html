@@ -4,13 +4,11 @@
   <title>Schizo_orthogroups (SOG)</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.PNG">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.PNG">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.PNG">
   <link rel="manifest" href="/site.webmanifest">	
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?">
-  
   <link rel="stylesheet" href="clinker_scripts/clinker_style.css">
   <style>
     div#plot {
@@ -113,6 +111,14 @@
 </head>
 
 <body>
+
+<button onclick="goBack()">Back to OG table</button>
+<script type='text/javascript'>
+function goBack() {
+    window.history.back();
+}
+</script>
+
   <main>
     <div class="banner" id="gene-banner"></div>
     <div id='plot'></div>
@@ -375,10 +381,10 @@
         `);
 
         function highlightSixthGene() {
-          // Get the first cluster only (top row)
-          const firstCluster = d3.select(".cluster:first-child");
+          // Get the fourth cluster (4th row)
+          const fourthCluster = d3.select(".cluster:nth-child(4)");
           
-          firstCluster.selectAll("polygon.genePolygon")
+          fourthCluster.selectAll("polygon.genePolygon")
             .each(function(d, i) {
               if (i === 5) {
                 // Get the gene name for the banner
