@@ -38,8 +38,8 @@
     .banner {
       position: fixed;
       top: 0;
-      left: 200px;
-      width: calc(100vw - 700px);
+      left: 120px;
+      width: calc(100vw - 600px);
       background: linear-gradient(135deg, #2c3e50, #3498db);
       padding: 12px 20px;
       text-align: center;
@@ -131,13 +131,12 @@ function goBack() {
         <ul>
           <li>Drag to move the figure</li>
           <li>Use mouse wheel or pinch gesture to zoom in/out</li>
-          <li>Drag a sequence name to reorder</li>
-          <li>Double-click on a sequence to flip orientation</li>
-          <li>Hover over a sequence to reveal a box and drag the box (not on a gene) to move the sequence</li>
           <li>Click on a gene to anchor the figure around it and its orthologs</li>
-          <li>Click on a sequence name to rename</li>
-          <li>Click on scale bar text to change scale bar length</li>
-          <li>Adjust other settings below!</li>
+          <li>Hover over a sequence to reveal a box and drag the box (not on a gene) to move the sequence to the left or right</li>
+          <li>Double-click on a sequence to flip orientation</li>
+          <li>Drag a species/lineage name to reorder</li>
+          <li>Click on a species/lineage name to rename</li>
+          <li>Adjust other settings below</li>
         </ul>
 
         <p>Links</p>
@@ -298,7 +297,7 @@ function goBack() {
           <input type="number" id="input-scalebar-margin-top" min="1" value="20" default="20">
         </div>
 
-        <p>Identity greyscale level</p>
+        <p>Identity bar</p>
         <div class="setting">
           <label for="input-colourbar-fontsize">Font size:</label>
           <input type="number" id="input-colourbar-fontsize" min="1" max="20" value="10" default="10">
