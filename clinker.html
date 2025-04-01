@@ -48,7 +48,7 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       color: white;
       white-space: pre-line;
-      height: 25px;
+      height: 40px;
       border-radius: 6px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       margin: 5px;
@@ -379,36 +379,74 @@ function goBack() {
           </filter>
         `);
 
-        function highlightSixthGene() {
-          // Get the fourth cluster (4th row)
-          const fourthCluster = d3.select(".cluster:nth-child(4)");
+        <!-- function highlightSixthGene() { -->
+          <!-- // Get the fourth cluster (4th row) -->
+          <!-- const fourthCluster = d3.select(".cluster:nth-child(4)"); -->
           
-          fourthCluster.selectAll("polygon.genePolygon")
-            .each(function(d, i) {
-              if (i === 5) {
-                // Get the gene name for the banner
-                const geneName = d.names.gene || d.names.locus_tag || d.uid;
-                d3.select("#gene-banner")
-                  .html(`Synteny plot for ${geneName} and its orthologs (in red with glow effect)`);
-              }
-            });
+          <!-- fourthCluster.selectAll("polygon.genePolygon") -->
+            <!-- .each(function(d, i) { -->
+              <!-- if (i === 5) { -->
+                <!-- // Get the gene name for the banner -->
+                <!-- const geneName = d.names.gene || d.names.locus_tag || d.uid; -->
+                <!-- d3.select("#gene-banner") -->
+                  <!-- .html(`Synteny plot for ${geneName} and its orthologs (in red with glow effect)`); -->
+              <!-- } -->
+            <!-- }); -->
 
-          // Keep the original highlighting for all clusters
-          d3.selectAll(".cluster")
-            .each(function() {
-              d3.select(this)
-                .selectAll("polygon.genePolygon")
-                .each(function(d, i) {
-                  if (i === 5) {
-                    d3.select(this)
-                      .style("fill", "#ff1a1a")
-                      .style("stroke-width", "1")
-                      .style("stroke", "#000000")
-                      .style("filter", "url(#highlight-glow)");
-                  }
-                });
-            });
-        }
+          <!-- // Keep the original highlighting for all clusters -->
+          <!-- d3.selectAll(".cluster") -->
+            <!-- .each(function() { -->
+              <!-- d3.select(this) -->
+                <!-- .selectAll("polygon.genePolygon") -->
+                <!-- .each(function(d, i) { -->
+                  <!-- if (i === 5) { -->
+                    <!-- d3.select(this) -->
+                      <!-- .style("fill", "#ff1a1a") -->
+                      <!-- .style("stroke-width", "1") -->
+                      <!-- .style("stroke", "#000000") -->
+                      <!-- .style("filter", "url(#highlight-glow)"); -->
+                  <!-- } -->
+                <!-- }); -->
+            <!-- }); -->
+        <!-- } -->
+		
+
+function highlightSixthGene() {
+  // Collect all sixth gene names
+  let geneNames = [];
+  
+  d3.selectAll(".cluster")
+    .each(function(d, clusterIndex) {
+      d3.select(this)
+        .selectAll("polygon.genePolygon")
+        .each(function(d, i) {
+          if (i === 5) {
+            const geneName = d.names.gene || d.names.locus_tag || d.uid;
+            geneNames.push(`${geneName}`);
+          }
+        });
+    });
+
+  // Update banner with all gene names
+  d3.select("#gene-banner")
+    .html(`Synteny plot for sixth genes across clusters<br><span style="font-size: 0.8em">${geneNames.join('; ')}</span>`);
+
+  // Keep the original highlighting for all clusters
+  d3.selectAll(".cluster")
+    .each(function() {
+      d3.select(this)
+        .selectAll("polygon.genePolygon")
+        .each(function(d, i) {
+          if (i === 5) {
+            d3.select(this)
+              .style("fill", "#ff1a1a")
+              .style("stroke-width", "1")
+              .style("stroke", "#000000")
+              .style("filter", "url(#highlight-glow)");
+          }
+        });
+    });
+}
 
         // Initial highlighting
         highlightSixthGene();
