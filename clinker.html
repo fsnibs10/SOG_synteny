@@ -108,16 +108,17 @@
 <script src="clinker_scripts/d3-data.js"></script>
 <!-- // https://d3js.org v6.3.1 Copyright 2020 Mike Bostock -->
 <script  src="clinker_scripts/d3-data_2.js"></script>
+
+<script>
+   function goBack() {
+        window.location.href = "https://fsnibs10.github.io/SOG_synteny/";
+   }
+</script>
 </head>
 
 <body>
 
 <button onclick="goBack()">Back to OG table</button>
-<script type='text/javascript'>
-function goBack() {
-    window.history.back();
-}
-</script>
 
   <main>
     <div class="banner" id="gene-banner"></div>
@@ -146,7 +147,7 @@ function goBack() {
         </div>
         <div class="setting">
           <label for="input-link-best-only">Show only best links:</label>
-          <input type="checkbox" id="input-link-best-only">
+          <input type="checkbox" id="input-link-best-only" checked>
         </div>
         <div class="setting">
           <label for="input-link-as-line">Draw links as lines:</label>
