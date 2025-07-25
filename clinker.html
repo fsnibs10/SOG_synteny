@@ -103,6 +103,7 @@
       margin: 0 0 0 8px;
       vertical-align: middle;
     }
+
   </style>
 
 <script src="clinker_scripts/d3-data.js"></script>
@@ -147,7 +148,7 @@
         </div>
         <div class="setting">
           <label for="input-link-best-only">Show only best links:</label>
-          <input type="checkbox" id="input-link-best-only">
+          <input type="checkbox" id="input-link-best-only" checked>
         </div>
         <div class="setting">
           <label for="input-link-as-line">Draw links as lines:</label>
@@ -353,7 +354,12 @@
             },
             scaleBar: {
               basePair: 5000
+            },
+                // --- 添加或修改 link 配置 ---
+            link: {
+              bestOnly: d3.select("#input-link-best-only").property("checked") // 初始化时读取复选框状态
             }
+               // ----------------------------
           })
       
         let plot = d3.select("#plot")
@@ -430,7 +436,7 @@ function highlightSixthGene() {
 
   // Update banner with all gene names
   d3.select("#gene-banner")
-    .html(`Synteny plot for sixth genes across clusters for the OG containing the following genes (in red with glow effect):<br><span style="font-size: 0.8em">${geneNames.join('; ')}</span>`);
+    .html(`Synteny plot for the OG containing the following genes (in <span style="color: red;">red</span> with glow effect):<br><span style="font-size: 0.8em">${geneNames.join('; ')}</span>`);
 
   // Keep the original highlighting for all clusters
   d3.selectAll(".cluster")
