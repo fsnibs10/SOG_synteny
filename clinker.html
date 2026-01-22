@@ -596,12 +596,34 @@ function highlightSixthGene() {
 
 const urlParams = new URLSearchParams(window.location.search);
 const id = urlParams.get('id');
-const dataFilePath = `data/${id}.json`;
+const dataFilePath = `data/${id}.json.gz`;
+
+// 1. Check if the browser supports decompression
+if (!('DecompressionStream' in window)) {
+    alert("Your browser is too old to view this data.\nPlease update to the latest version of Chrome, Firefox, or Safari.");
+    throw new Error("DecompressionStream not supported");
+}
 
 if (id) {
-  const dataPromise = d3.json(dataFilePath).then(plot);
+  fetch(dataFilePath)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const ds = new DecompressionStream('gzip');
+      const decompressedStream = response.body.pipeThrough(ds);
+      return new Response(decompressedStream).json();
+    })
+    .then(data => {
+      plot(data);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      // Optional: Display error on the page so the user sees it
+      document.getElementById('plot').innerHTML = `<h3 style="margin:20px; color:red;">Error loading data: ${error.message}</h3>`;
+    });
 } else {
-  console.error("No 'id' parameter provided in the URL.");
+  console.error("No 'id' parameter provided.");
 }
 </script>
   </main>
